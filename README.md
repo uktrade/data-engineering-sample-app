@@ -24,15 +24,15 @@ Note: The `requirements.txt` file includes a reference to the `data-engineering-
 `app/`: basically where all the app logic lives
 `app/api`: api logic, routes and views essentially
 `app/api/routes.py`: The list of urls that make up the api and their corresponding views. There are 3 routes here,
-* /get-data: an unauthenticated route
-* /get-data-authenticated: a hawk authenticated route
-* /train-model: a route to trigger some process on the app server
-* additional routes are also inherited from the `data-engineering-common` repo, e.g. /healthcheck which is used by Cloud Foundry to periodically check whether the app server is running without any issues
+* `/get-data`: an unauthenticated route
+* `/get-data-authenticated`: a hawk authenticated route
+* `/train-model`: a route to trigger some process on the app server
+* additional routes are also inherited from the `data-engineering-common` repo, e.g. `/healthcheck` which is used by Cloud Foundry to periodically check whether the app server is running without any issues
 
 `app/api/views.py`: Here lies the python implementations of the api routes. `get_data` is a fairly simple view. `get_data_authenticated` showcases how to write a hawk authenticated view, it does this by using several decorators, 
 
 * `json_error` is for making any errors more meaningful
-* `response_orientation_decorator` is used for managing the data structure of the returned data, there are two options, `tabular` and `records` (inspired by pandas dataframes and their `to_dict` method). `tabular` will return the data in the form, {'headers': ['header1', 'header2'], 'values': [('value1', 'value2'), ('value3', 'value4'), ...]}, `records` will return data in json object format, {'results': [{'header1': 'value1', 'header2': 'value2'}, {'header1': 'value3', 'header2': 'value4'}, ...]}. Returning results in tabular form does decrease the amount of data being sent across the network but at in certain situations, records can be easier to work with, data-flow currently expects data in the records format. 
+* `response_orientation_decorator` is used for managing the data structure of the returned data, there are two options, `tabular` and `records` (inspired by pandas dataframes and their `to_dict` method). `tabular` will return the data in the form, `{'headers': ['header1', 'header2'], 'values': [('value1', 'value2'), ('value3', 'value4'), ...]}`, `records` will return data in json object format, `{'results': [{'header1': 'value1', 'header2': 'value2'}, {'header1': 'value3', 'header2': 'value4'}, ...]}`. Returning results in tabular form does decrease the amount of data being sent across the network but at in certain situations, records can be easier to work with, data-flow currently expects data in the records format. 
 * `@ac.authentication_required` ensures that any request sent to this view contains hawk authentication credentials, an example of how to include credentials in your request can be found below.
 * `@ac.authorization_required` ensures that the authenciated user has the correct permissions to access the route, this is managed by the user's scope which is set when creating a Hawk user, in most cases an authenticated user will have permission to use all api routes.
 
@@ -47,7 +47,7 @@ When returning a response object it is important to use the `flask_app.make_resp
 * `add_hawk_user`: This command requires several arguments, 
   * `client_id` : this is the id you assign to someone who is requesting something from your app 
   * `client_key`: this is the id you assign to someone who is requesting something from your app
-  * `client_scope` : Not 100% sure but this should be a list of routes the user can access, but in most cases you can just set this to '*'
+  * `client_scope` : Not 100% sure but this should be a list of routes the user can access, but in most cases you can just set this to `'*'`
   * `description`
 
 `app/config/defaults.yml`: A list of the config arguments and their default values
@@ -80,3 +80,6 @@ Other data-engineering apps use Black and flake8 for code formatting, you can lo
 * https://github.com/uktrade/countries-of-interest-service
 * https://github.com/uktrade/data-store-service
 * https://github.com/uktrade/data-store-uploader
+
+## Additional resources
+https://www.cloud.service.gov.uk/ go through some of these examples to learn about how to deploy on Cloud Foundry
