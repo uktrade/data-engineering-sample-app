@@ -8,12 +8,15 @@ This installation is set up for installing on `localhost`, for a Docker workflow
 2. Create a python virtual environment, e.g. if using [virtualenv](https://virtualenv.pypa.io/en/stable/index.html) `virtualenv venv`
 3. Activate the virtualenv, e.g. `source venv/bin/activate`
 4. Install python libraries, `pip install -r requirements.txt`
-5. Configure the app database connection, `app/config/defaults.yml database_url`
-6. Configure the app cache connection, `app/config/defaults.yml cache:*`
+5. Configure the app database connection, edit the `database_url` parameter in the `app/config/defaults.yml` file if neccessary
+6. Configure the app cache connection, edit the `cache` parameters in the `app/config/defaults.yml` file if neccessary
 7. Install postgres and redis if not already installed
 8. Create app database and tables, `python manage.py dev db --create`
 9. Create a hawk user: `python manage.py dev add_hawk_user --client_id client_id1 --client_key client_key1 --client_scope '*' --description user1`
 10. Run the application server, `flask run`
+11. Test the application server, 
+    * `python scripts/get_data.py`
+    * `python scripts/get_data_authenticated.py`
 
 Note: The `requirements.txt` file includes a reference to the `data-engineering-common` repo, if a newer version of the repo is released you may need to manually uninstall the old version before reinstalling the newer version. `pip remove data-engineering-common`.
 
